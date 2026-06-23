@@ -1,5 +1,6 @@
 import React from "react";
 import { Terminal, Shield, Brain, Cpu, CheckCircle } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function About() {
   const capabilities = [
@@ -12,7 +13,13 @@ export default function About() {
   return (
     <section id="about" className="py-20 bg-slate-950 border-t border-slate-900 font-sans relative">
       <div className="absolute top-1/2 left-10 w-64 h-64 rounded-full bg-blue-500/5 blur-[80px] pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Layout Left Column: Big Display Identity Title */}
@@ -67,7 +74,7 @@ export default function About() {
           </div>
 
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

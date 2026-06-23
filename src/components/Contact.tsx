@@ -31,7 +31,13 @@ export default function Contact() {
 
   return (
     <section id="contact" className="py-20 bg-slate-950 border-t border-slate-900 font-sans relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         
         {/* Intro */}
         <div className="mb-14 text-center max-w-3xl mx-auto">
@@ -171,7 +177,7 @@ export default function Contact() {
           </div>
 
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

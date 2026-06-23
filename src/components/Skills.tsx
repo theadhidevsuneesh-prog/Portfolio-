@@ -80,7 +80,13 @@ export default function Skills() {
 
   return (
     <section id="skills" className="py-20 bg-slate-950 border-t border-slate-900 overflow-hidden font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         
         {/* Header Block and Filter controls */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -186,7 +192,7 @@ export default function Skills() {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
