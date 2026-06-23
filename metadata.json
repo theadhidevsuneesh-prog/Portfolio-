@@ -1,0 +1,6 @@
+{
+  "name": "Adhi's Portfolio",
+  "description": "An interactive, high-fidelity engineering student portfolio for Adhi. Features active Netlify project showcases, custom Python, HTML5, and AI tech skill paths, and a server-side Gemini-powered interactive playground.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
