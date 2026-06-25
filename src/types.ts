@@ -24,16 +24,3 @@ export interface ProjectItem {
   tags: string[];
   type: 'interactive-ai' | 'canvas' | 'markdown';
 }
-
-export interface PaletteResponse {
-  themeName: string;
-  explanation: string;
-  colors: {
-    background: string;
-    card: string;
-    primary: string;
-    secondary: string;
-    accent: string;
-    text: string;
-  };
-}
