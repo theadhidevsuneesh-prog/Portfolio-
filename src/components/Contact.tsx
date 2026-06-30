@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Send, Terminal, Mail, CheckCircle, Info, ShieldAlert } from "lucide-react";
+import { Send, Terminal, Mail, CheckCircle, Info, ShieldAlert, Linkedin } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function Contact() {
@@ -162,6 +162,16 @@ export default function Contact() {
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">Phone Number</span>
                     <a href="tel:8086012951" className="text-slate-200 hover:text-white transition font-medium">
                       +91 8086012951
+                    </a>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-slate-900/60 border border-slate-850 rounded-xl flex items-center gap-3">
+                  <Linkedin className="w-4 h-4 text-blue-400 shrink-0" />
+                  <div>
+                    <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">LinkedIn Profile</span>
+                    <a href="https://www.linkedin.com/in/theadhidevsuneesh" target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white transition font-medium">
+                      linkedin.com/in/theadhidevsuneesh
                     </a>
                   </div>
                 </div>

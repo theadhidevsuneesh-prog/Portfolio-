@@ -5,11 +5,11 @@ import { ChatMessage } from "../types";
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>( [
     {
       id: "initial",
       role: "assistant",
-      content: "Hello! I am Google AI Studio's AI Coding Agent. I am a server-side developer system powered by Gemini models and DeepMind's Antigravity framework. Ask me anything about my software stack, my architecture guidelines, or how I can compile and build websites for you! ⚡",
+      content: "Hello! I am Adhi's AI Assistant, developed by Adhidev Suneesh. I'm here to help you learn more about Adhidev's background, professional projects, and technology stack. Ask me anything! ⚡",
       timestamp: new Date()
     }
   ]);
@@ -20,10 +20,10 @@ export default function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = [
-    "What is your tech stack?",
-    "Can you write a React hook?",
-    "How does your database sync work?",
-    "Explain your Antigravity architecture."
+    "Tell me about Adhidev.",
+    "What are his latest projects?",
+    "What is Adhidev's tech stack?",
+    "How can I contact him?"
   ];
 
   const scrollToBottom = () => {
@@ -112,44 +112,40 @@ export default function Chatbot() {
       let localResponse = "";
 
       if (lowerText.includes("tech stack") || lowerText.includes("technologies") || lowerText.includes("languages") || lowerText.includes("stack") || lowerText.includes("framework")) {
-        localResponse = "I am built with React 18, Vite, Tailwind CSS, TypeScript, and Express. I also use motion (framer-motion) for fluid transitions, Lucide React for modern iconography, and the modern @google/genai SDK on the server-side!";
-      } else if (lowerText.includes("react hook") || lowerText.includes("write a hook") || lowerText.includes("custom hook") || lowerText.includes("code")) {
-        localResponse = "Of course! Here is a simple, highly optimized state toggle hook:\n\n```typescript\nimport { useState, useCallback } from 'react';\n\nexport function useToggle(initial = false) {\n  const [val, setVal] = useState(initial);\n  const toggle = useCallback(() => setVal(v => !v), []);\n  return [val, toggle] as const;\n}\n```";
-      } else if (lowerText.includes("database sync") || lowerText.includes("firestore") || lowerText.includes("database") || lowerText.includes("sync")) {
-        localResponse = "I use a lightweight client-server architecture with secure server-side proxy routes to avoid exposing keys, and local state management for instant UI updates!";
-      } else if (lowerText.includes("antigravity") || lowerText.includes("architecture")) {
-        localResponse = "The Antigravity framework is Google's internal orchestration pattern that enables seamless server-side agent compilation and safe runtime state transitions within Google AI Studio.";
+        localResponse = "Adhidev's core tech stack includes React, Vite, Tailwind CSS, TypeScript, Next.js, and Express. He specializes in designing fully integrated full-stack applications with elegant user interfaces.";
       } else if (lowerText.includes("who are you") || lowerText.includes("what is your name") || lowerText.includes("about") || lowerText.includes("who is adhi") || lowerText.includes("adhi")) {
-        localResponse = "I am Adhi's AI Developer Agent, powered by Google AI Studio! I can speak about Adhi's achievements, skills, projects, and tech stack.";
+        localResponse = "I am Adhi's AI Assistant, developed by Adhidev Suneesh! I'm here to share insights on Adhi's professional projects, development skills, and technical accomplishments.";
       } else if (lowerText.includes("hello") || lowerText.includes("hi") || lowerText.includes("hey") || lowerText.includes("greet")) {
-        localResponse = "Hello! I am Adhi's AI Developer Agent. How can I help you today?";
+        localResponse = "Hello! I am Adhi's custom AI Assistant, developed by Adhidev Suneesh. How can I help you today?";
       } else if (lowerText.includes("project") || lowerText.includes("work") || lowerText.includes("portfolio")) {
-        localResponse = "Adhi has built several high-fidelity projects, including:\n1. **Engineering Portfolio**: This beautifully animated React applet.\n2. **AI Theme Playground**: A tool to generate creative color palettes from prompts.\n3. **Python & Automation Suite**: Customized scripts for continuous automation.";
+        localResponse = "Adhidev has created several outstanding AI and web projects, including:\n1. **Solo Leveling Web App**: Immersive fansite UI.\n2. **Safar AI**: Personalized trip curators.\n3. **Aura AI**: Gamified productivity workflows.\n4. **Gusto AI**: Pantry mapping culinary assistants.\n5. **Leo AI Financing**: Financial forecasts dashboards.\n6. **Zyntax AI**: Automated developer workspaces.\n7. **Velvet Letters**: Typographic canvas and digital journaling.\n8. **Popcorn AI**: Movie recommendations & mood curation.\n9. **Zenith Focus**: Pomodoro task companion and dashboard.";
+      } else if (lowerText.includes("contact") || lowerText.includes("linkedin") || lowerText.includes("email")) {
+        localResponse = "You can connect with Adhidev Suneesh directly via:\n- **LinkedIn**: linkedin.com/in/theadhidevsuneesh\n- **Email**: theadhidevsuneesh@gmail.com\n- **Contact Form**: Scroll to the bottom of the page to send a direct message!";
       }
 
       let botContent = "";
       if (localResponse) {
-        botContent = `🤖 **[Local Fallback Mode]** ${localResponse}\n\n*(Note: Standard cloud-based AI response failed. If you want full open-ended conversational AI, please register a valid \`GEMINI_API_KEY\` under Settings > Secrets!)*`;
+        botContent = `🤖 **[Local Mode]** ${localResponse}\n\n*(Note: This AI was developed by Adhidev Suneesh. Register your \`GEMINI_API_KEY\` under Settings > Secrets to unlock full conversational capability!)*`;
       } else {
         if (isKeyErr) {
-          botContent = `I am currently operating in **Local Fallback Mode** because your \`GEMINI_API_KEY\` is not yet registered or is invalid in the AI Studio Secrets panel.
+          botContent = `I am currently operating in **Local Mode** because your \`GEMINI_API_KEY\` is not registered or is invalid in the Secrets panel. This AI was developed by Adhidev Suneesh.
 
-**How to activate full AI features:**
-1. Click on **Settings** (the gear icon) at the top right of your AI Studio interface.
+**How to activate full conversational AI:**
+1. Click on **Settings** (gear icon) at the top right.
 2. Select the **Secrets** tab.
 3. Click **Add Secret** and name it \`GEMINI_API_KEY\`.
-4. Enter your real Gemini API key from Google AI Studio.
-5. Save your settings and enjoy fully-interactive, open-ended discussions!
+4. Enter your real Gemini API key.
+5. Save and enjoy full interactive chat!
 
-*In the meantime, feel free to ask me about my **tech stack**, **projects**, or to **write a React hook**, which I can answer locally! ⚡*`;
+*In the meantime, feel free to ask about Adhi's **tech stack**, his **projects**, or how to **contact him**! ⚡*`;
         } else {
-          botContent = `I encountered a connection issue reaching my cloud brain. 
+          botContent = `I encountered a connection issue reaching my cloud brain. This AI assistant was developed by Adhidev Suneesh.
 
-**How to get up and running:**
-1. **API Key Check**: Ensure a valid \`GEMINI_API_KEY\` is registered under **Settings** (gear icon) > **Secrets** tab.
-2. **Server Check**: Click "Restart Dev Server" to refresh the runtime container if needed.
+**Quick tips to restore full AI:**
+1. **API Key Check**: Verify your \`GEMINI_API_KEY\` is correct under Settings > Secrets.
+2. **Server Check**: Click "Restart Dev Server" to refresh the container.
 
-*No worries! I can still answer queries locally. Try asking about my **tech stack**, my **projects**, or ask me to **write a React hook**! ⚡*`;
+*No worries! You can still ask me about Adhi's **projects**, his **tech stack**, or how to **contact him**! ⚡*`;
         }
       }
 

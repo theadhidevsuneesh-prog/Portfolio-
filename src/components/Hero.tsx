@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Cpu, ArrowRight, Eye } from "lucide-react";
+import { Cpu, ArrowRight, Eye, Linkedin } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function Hero() {
@@ -93,6 +93,15 @@ export default function Hero() {
             >
               <Eye className="w-4 h-4 text-indigo-400" />
               <span>Explore My Projects</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/theadhidevsuneesh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3.5 bg-slate-900/50 border border-slate-800 hover:bg-slate-850 hover:border-slate-700 text-blue-400 hover:text-blue-300 rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Linkedin className="w-4 h-4" />
+              <span>Connect on LinkedIn</span>
             </a>
           </motion.div>
         </div>
