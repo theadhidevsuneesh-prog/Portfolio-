@@ -2,8 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Bot, Terminal, ShieldAlert, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChatMessage } from "../types";
+import { useTheme } from "../ThemeContext";
 
 export default function Chatbot() {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>( [
     {
@@ -129,22 +133,22 @@ export default function Chatbot() {
       } else {
         if (isKeyErr) {
           botContent = `I am currently operating in **Local Mode** because your \`GEMINI_API_KEY\` is not registered or is invalid in the Secrets panel. This AI was developed by Adhidev Suneesh.
-
+ 
 **How to activate full conversational AI:**
 1. Click on **Settings** (gear icon) at the top right.
 2. Select the **Secrets** tab.
 3. Click **Add Secret** and name it \`GEMINI_API_KEY\`.
 4. Enter your real Gemini API key.
 5. Save and enjoy full interactive chat!
-
+ 
 *In the meantime, feel free to ask about Adhi's **tech stack**, his **projects**, or how to **contact him**! ⚡*`;
         } else {
           botContent = `I encountered a connection issue reaching my cloud brain. This AI assistant was developed by Adhidev Suneesh.
-
+ 
 **Quick tips to restore full AI:**
 1. **API Key Check**: Verify your \`GEMINI_API_KEY\` is correct under Settings > Secrets.
 2. **Server Check**: Click "Restart Dev Server" to refresh the container.
-
+ 
 *No worries! You can still ask me about Adhi's **projects**, his **tech stack**, or how to **contact him**! ⚡*`;
         }
       }
@@ -185,25 +189,31 @@ export default function Chatbot() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className="w-96 h-[520px] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col overflow-hidden text-slate-100"
+            className={`w-96 h-[520px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden transition-colors duration-300 ${
+              isLight ? "bg-white border-slate-200 text-slate-800" : "bg-slate-900 border-slate-800 text-slate-100"
+            }`}
           >
             {/* Header */}
-            <div className="px-4 py-3 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-b border-slate-800 flex items-center justify-between">
+            <div className={`px-4 py-3 border-b flex items-center justify-between transition-colors duration-300 ${
+              isLight ? "bg-slate-50 border-slate-200" : "bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-slate-800"
+            }`}>
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+                <div className={`p-1.5 rounded-lg ${isLight ? "bg-indigo-100 text-indigo-700" : "bg-indigo-500/10 text-indigo-400"}`}>
                   <Bot className="w-5 h-5 animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm tracking-wide">Developer Agent</h3>
+                  <h3 className={`font-semibold text-sm tracking-wide ${isLight ? "text-slate-900" : "text-white"}`}>Developer Agent</h3>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="text-[10px] text-slate-400 font-mono tracking-tight text-emerald-400">GEMINI-3.5-FLASH</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                    <span className={`text-[10px] font-mono tracking-tight font-semibold ${isLight ? "text-emerald-700" : "text-emerald-400"}`}>GEMINI-3.5-FLASH</span>
                   </div>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+                className={`p-1 rounded-lg transition cursor-pointer ${
+                  isLight ? "text-slate-500 hover:text-slate-900 hover:bg-slate-100" : "text-slate-400 hover:text-white hover:bg-slate-800"
+                }`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -211,11 +221,13 @@ export default function Chatbot() {
 
             {/* Error Overlay for missing API Key */}
             {keyError && (
-              <div className="p-3 bg-amber-950/40 border-b border-amber-800 text-amber-200 text-xs flex gap-2 items-start shrink-0">
-                <ShieldAlert className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className={`p-3 text-xs flex gap-2 items-start shrink-0 border-b transition-colors duration-300 ${
+                isLight ? "bg-amber-50 border-amber-200 text-amber-800" : "bg-amber-950/40 border-amber-800 text-amber-200"
+              }`}>
+                <ShieldAlert className={`w-4 h-4 shrink-0 mt-0.5 ${isLight ? "text-amber-600" : "text-amber-400"}`} />
                 <div>
                   <span className="font-semibold block mb-0.5">GEMINI_API_KEY Required</span>
-                  To enable natural chat, click <strong className="text-white">Settings &gt; Secrets</strong> in AI Studio and register your <code className="bg-slate-950 px-1 py-0.5 rounded text-amber-400 font-mono">GEMINI_API_KEY</code>.
+                  To enable natural chat, click <strong className={isLight ? "text-slate-900" : "text-white"}>Settings &gt; Secrets</strong> in AI Studio and register your <code className={`px-1 py-0.5 rounded font-mono ${isLight ? "bg-slate-150 text-amber-800" : "bg-slate-950 text-amber-400"}`}>GEMINI_API_KEY</code>.
                 </div>
               </div>
             )}
@@ -228,13 +240,21 @@ export default function Chatbot() {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div className={`flex gap-2.5 max-w-[85%] ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold select-none
-                      ${msg.role === "user" ? "bg-blue-600 text-white" : "bg-slate-800 text-indigo-400 border border-indigo-900/40"}
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold select-none transition-colors duration-300
+                      ${msg.role === "user" 
+                        ? "bg-blue-600 text-white" 
+                        : isLight 
+                          ? "bg-slate-100 text-indigo-700 border border-slate-200" 
+                          : "bg-slate-800 text-indigo-400 border border-indigo-900/40"}
                     `}>
                       {msg.role === "user" ? "U" : <Terminal className="w-4 h-4" />}
                     </div>
-                    <div className={`p-3 rounded-2xl text-xs leading-relaxed break-words whitespace-pre-wrap
-                      ${msg.role === "user" ? "bg-blue-600 text-white rounded-tr-none" : "bg-slate-800/80 border border-slate-800 text-slate-200 rounded-tl-none"}
+                    <div className={`p-3 rounded-2xl text-xs leading-relaxed break-words whitespace-pre-wrap transition-colors duration-300
+                      ${msg.role === "user" 
+                        ? "bg-blue-600 text-white rounded-tr-none" 
+                        : isLight 
+                          ? "bg-slate-50 border border-slate-200 text-slate-800 rounded-tl-none" 
+                          : "bg-slate-800/80 border border-slate-800 text-slate-200 rounded-tl-none"}
                     `}>
                       {msg.content}
                     </div>
@@ -245,13 +265,19 @@ export default function Chatbot() {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-2.5 max-w-[85%] items-center">
-                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-indigo-900/40 text-indigo-400 flex items-center justify-center shrink-0">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold select-none transition-colors duration-300 ${
+                      isLight 
+                        ? "bg-slate-100 text-indigo-700 border border-slate-200" 
+                        : "bg-slate-800 text-indigo-400 border border-indigo-900/40"
+                    }`}>
                       <Terminal className="w-4 h-4" />
                     </div>
-                    <div className="bg-slate-800/50 border border-slate-850 px-4 py-2.5 rounded-2xl rounded-tl-none flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <div className={`px-4 py-2.5 rounded-2xl rounded-tl-none flex items-center gap-1.5 transition-colors duration-300 ${
+                      isLight ? "bg-slate-50 border border-slate-200" : "bg-slate-800/50 border-slate-850"
+                    }`}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
                   </div>
                 </div>
@@ -261,16 +287,20 @@ export default function Chatbot() {
 
             {/* Quick Prompts Helper */}
             {messages.length === 1 && (
-              <div className="px-4 py-2 bg-slate-950/40 border-t border-slate-850">
-                <span className="text-[10px] text-slate-500 font-medium tracking-wider uppercase block mb-1.5 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-indigo-400" /> Suggested Topics
+              <div className={`px-4 py-2 border-t transition-colors duration-300 ${isLight ? "bg-slate-50 border-slate-150" : "bg-slate-950/40 border-slate-850"}`}>
+                <span className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase block mb-1.5 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-indigo-500" /> Suggested Topics
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {quickPrompts.map((promptText) => (
                     <button
                       key={promptText}
                       onClick={() => handleSend(promptText)}
-                      className="text-[11px] bg-slate-800/60 hover:bg-indigo-950/40 border border-slate-750 hover:border-indigo-500/20 text-slate-300 rounded-md px-2 py-1 transition text-left cursor-pointer"
+                      className={`text-[11px] border rounded-md px-2 py-1 transition text-left cursor-pointer ${
+                        isLight 
+                          ? "bg-white hover:bg-indigo-50 border-slate-200 hover:border-indigo-200 text-slate-750 hover:text-indigo-850" 
+                          : "bg-slate-800/60 hover:bg-indigo-950/40 border border-slate-750 hover:border-indigo-500/20 text-slate-300"
+                      }`}
                     >
                       {promptText}
                     </button>
@@ -285,19 +315,23 @@ export default function Chatbot() {
                 e.preventDefault();
                 handleSend(input);
               }}
-              className="p-3 bg-slate-950 border-t border-slate-800 flex gap-2"
+              className={`p-3 border-t flex gap-2 transition-colors duration-300 ${
+                isLight ? "bg-slate-50 border-slate-200" : "bg-slate-950 border-slate-800"
+              }`}
             >
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your coding question..."
-                className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500 text-slate-100 transition whitespace-nowrap overflow-ellipsis"
+                className={`flex-1 border rounded-xl px-3 py-2 text-xs transition whitespace-nowrap overflow-ellipsis focus:outline-none focus:border-indigo-500 ${
+                  isLight ? "bg-white border-slate-200 text-slate-850" : "bg-slate-900 border-slate-800 text-slate-100"
+                }`}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 disabled:from-slate-800 disabled:to-slate-800 text-white rounded-xl hover:shadow-md cursor-pointer transition flex items-center justify-center shrink-0 w-8 h-8 disabled:cursor-not-allowed"
+                className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-800 dark:disabled:to-slate-800 text-white rounded-xl hover:shadow-md cursor-pointer transition flex items-center justify-center shrink-0 w-8 h-8 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -308,3 +342,4 @@ export default function Chatbot() {
     </div>
   );
 }
+

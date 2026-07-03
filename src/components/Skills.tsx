@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { Cpu, Server, Code2, Sparkles, Sliders, Database, Layers, Cloud } from "lucide-react";
 import { motion } from "motion/react";
 import { SkillCategory } from "../types";
+import { useTheme } from "../ThemeContext";
 
 export default function Skills() {
   const [filterThreshold, setFilterThreshold] = useState<number>(0);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const categories: SkillCategory[] = [
     {
@@ -49,21 +52,21 @@ export default function Skills() {
 
   const getIcon = (name: string) => {
     switch (name) {
-      case "Code2": return <Code2 className="w-4 h-4 text-blue-400" />;
-      case "Layers": return <Layers className="w-4 h-4 text-indigo-400" />;
-      case "Cpu": return <Cpu className="w-4 h-4 text-rose-400" />;
-      case "Sparkles": return <Sparkles className="w-4 h-4 text-amber-400" />;
-      case "Server": return <Server className="w-4 h-4 text-purple-400" />;
-      case "Database": return <Database className="w-4 h-4 text-emerald-400" />;
-      case "Cloud": return <Cloud className="w-4 h-4 text-cyan-400" />;
-      default: return <Cpu className="w-4 h-4 text-blue-400" />;
+      case "Code2": return <Code2 className={`w-4 h-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />;
+      case "Layers": return <Layers className={`w-4 h-4 ${isLight ? "text-indigo-600" : "text-indigo-400"}`} />;
+      case "Cpu": return <Cpu className={`w-4 h-4 ${isLight ? "text-rose-600" : "text-rose-400"}`} />;
+      case "Sparkles": return <Sparkles className={`w-4 h-4 ${isLight ? "text-amber-600" : "text-amber-400"}`} />;
+      case "Server": return <Server className={`w-4 h-4 ${isLight ? "text-purple-600" : "text-purple-400"}`} />;
+      case "Database": return <Database className={`w-4 h-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`} />;
+      case "Cloud": return <Cloud className={`w-4 h-4 ${isLight ? "text-cyan-600" : "text-cyan-400"}`} />;
+      default: return <Cpu className={`w-4 h-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />;
     }
   };
 
   const getBadgeColor = (level: number) => {
-    if (level >= 95) return "text-emerald-400 border-emerald-500/25 bg-emerald-500/10";
-    if (level >= 90) return "text-blue-400 border-blue-500/25 bg-blue-500/10";
-    return "text-indigo-400 border-indigo-500/25 bg-indigo-500/10";
+    if (level >= 95) return isLight ? "text-emerald-700 border-emerald-300 bg-emerald-50" : "text-emerald-400 border-emerald-500/25 bg-emerald-500/10";
+    if (level >= 90) return isLight ? "text-blue-700 border-blue-300 bg-blue-50" : "text-blue-400 border-blue-500/25 bg-blue-500/10";
+    return isLight ? "text-indigo-700 border-indigo-300 bg-indigo-50" : "text-indigo-400 border-indigo-500/25 bg-indigo-500/10";
   };
 
   // Build category tabs list
@@ -79,7 +82,9 @@ export default function Skills() {
   })).filter(cat => cat.items.length > 0);
 
   return (
-    <section id="skills" className="py-20 bg-slate-950 border-t border-slate-900 overflow-hidden font-sans">
+    <section id="skills" className={`py-20 border-t overflow-hidden font-sans transition-colors duration-300 ${
+      isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-900"
+    }`}>
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -91,24 +96,26 @@ export default function Skills() {
         {/* Header Block and Filter controls */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full inline-flex mb-3.5">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-500 bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-full inline-flex mb-3.5">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
               CAPABILITIES & SPECS
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight ${isLight ? "text-slate-950" : "text-white"}`}>
               My Core Software Stack
             </h2>
-            <p className="text-slate-400 text-sm mt-2 max-w-xl">
+            <p className={`text-sm mt-2 max-w-xl ${isLight ? "text-slate-600" : "text-slate-400"}`}>
               Fine-tuned competence matrix mapping framework proficiencies, pipeline orchestration confidence, and backend architectural fluency.
             </p>
           </div>
 
           {/* Interactive slider component & filters */}
-          <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row items-center gap-6 md:max-w-md w-full">
+          <div className={`border p-5 rounded-2xl flex flex-col sm:flex-row items-center gap-6 md:max-w-md w-full transition-colors duration-300 ${
+            isLight ? "bg-slate-50 border-slate-200" : "bg-slate-900/60 border-slate-800"
+          }`}>
             <div className="w-full space-y-2">
               <div className="flex justify-between text-xs font-mono font-bold">
                 <span className="text-slate-500 flex items-center gap-1.5"><Sliders className="w-3.5 h-3.5" /> MIN CONFIDENCE</span>
-                <span className="text-indigo-400">{filterThreshold}%</span>
+                <span className="text-indigo-600 dark:text-indigo-400">{filterThreshold}%</span>
               </div>
               <input
                 type="range"
@@ -117,14 +124,14 @@ export default function Skills() {
                 step="5"
                 value={filterThreshold}
                 onChange={(e) => setFilterThreshold(Number(e.target.value))}
-                className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
               />
             </div>
           </div>
         </div>
 
         {/* Category Filters Tabular layout */}
-        <div className="flex flex-wrap gap-2 mb-10 pb-2 border-b border-slate-900">
+        <div className={`flex flex-wrap gap-2 mb-10 pb-2 border-b transition-colors duration-300 ${isLight ? "border-slate-200" : "border-slate-900"}`}>
           {categoryNames.map((name) => (
             <button
               key={name}
@@ -132,7 +139,9 @@ export default function Skills() {
               className={`px-4 py-2 rounded-xl text-xs font-medium border transition cursor-pointer ${
                 activeCategory === name
                   ? "bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/10"
-                  : "bg-slate-900 border-slate-800/80 text-slate-400 hover:text-white"
+                  : isLight 
+                    ? "bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200"
+                    : "bg-slate-900 border-slate-800/80 text-slate-400 hover:text-white"
               }`}
             >
               {name}
@@ -145,13 +154,17 @@ export default function Skills() {
           {filteredCategories.map((category) => (
             <div
               key={category.title}
-              className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/55 rounded-2xl p-6.5 flex flex-col justify-between hover:border-slate-750 transition-all duration-300"
+              className={`border rounded-2xl p-6.5 flex flex-col justify-between transition-all duration-300 ${
+                isLight 
+                  ? "bg-slate-50/50 border-slate-200 hover:bg-white shadow-sm shadow-slate-100" 
+                  : "bg-gradient-to-br from-slate-900 to-slate-950 border-slate-800/55 hover:border-slate-750"
+              }`}
             >
               <div>
-                <h3 className="text-lg font-bold text-indigo-400 inline-block mb-1">
+                <h3 className="text-lg font-bold text-indigo-600 dark:text-indigo-400 inline-block mb-1">
                   {category.title}
                 </h3>
-                <p className="text-xs text-slate-400/80 mb-6 font-medium leading-relaxed">
+                <p className={`text-xs mb-6 font-medium leading-relaxed ${isLight ? "text-slate-600" : "text-slate-400/80"}`}>
                   {category.description}
                 </p>
 
@@ -159,11 +172,17 @@ export default function Skills() {
                   {category.items.map((skill) => (
                     <div
                       key={skill.name}
-                      className="bg-slate-900/40 border border-slate-850 rounded-xl p-3 flex flex-col justify-between gap-3 text-slate-200"
+                      className={`border rounded-xl p-3 flex flex-col justify-between gap-3 transition-colors duration-300 ${
+                        isLight 
+                          ? "bg-white border-slate-200 text-slate-800" 
+                          : "bg-slate-900/40 border-slate-850 text-slate-200"
+                      }`}
                     >
                       <div className="flex items-center justify-between gap-3 w-full">
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div className="p-1.5 bg-slate-950 rounded-lg border border-slate-800 flex items-center justify-center shrink-0">
+                          <div className={`p-1.5 rounded-lg border flex items-center justify-center shrink-0 ${
+                            isLight ? "bg-slate-50 border-slate-200" : "bg-slate-950 border-slate-850"
+                          }`}>
                             {getIcon(skill.iconName)}
                           </div>
                           <span className="text-xs font-semibold tracking-tight leading-tight whitespace-normal break-words">
@@ -176,7 +195,7 @@ export default function Skills() {
                       </div>
 
                       {/* Skill progression visual bar */}
-                      <div className="w-full bg-slate-950 rounded-full h-1 overflow-hidden mt-1">
+                      <div className={`rounded-full h-1 overflow-hidden mt-1 ${isLight ? "bg-slate-100" : "bg-slate-950"}`}>
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.level}%` }}

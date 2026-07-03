@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Terminal, Cpu, Menu, X, Code2 } from "lucide-react";
+import { Terminal, Cpu, Menu, X, Code2, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from "../ThemeContext";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isLight = theme === "light";
 
   const navLinks = [
     { label: "Overview", href: "#hero" },
@@ -14,7 +17,11 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-900 font-sans">
+    <header className={`fixed top-0 left-0 right-0 z-40 backdrop-blur-md transition-colors duration-300 border-b font-sans ${
+      isLight 
+        ? "bg-white/85 border-slate-200 text-slate-900" 
+        : "bg-slate-950/85 border-slate-900 text-slate-100"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand identity */}
         <div className="flex items-center gap-2.5">
@@ -22,10 +29,10 @@ export default function Navbar() {
             <Cpu className="w-5 h-5" />
           </div>
           <div>
-            <span className="font-bold text-slate-100 text-base tracking-tight block">
+            <span className={`font-bold text-base tracking-tight block ${isLight ? "text-slate-900" : "text-slate-100"}`}>
               ADHI.dev
             </span>
-            <span className="text-[9px] text-indigo-400 font-mono tracking-widest block uppercase -mt-0.5">
+            <span className="text-[9px] text-indigo-500 font-mono tracking-widest block uppercase -mt-0.5 font-bold">
               Engineering student
             </span>
           </div>
@@ -37,7 +44,9 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-slate-400 hover:text-white transition duration-200 relative group"
+              className={`text-sm font-medium transition duration-200 relative group ${
+                isLight ? "text-slate-600 hover:text-slate-900" : "text-slate-400 hover:text-white"
+              }`}
             >
               {link.label}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
@@ -45,8 +54,21 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Action Button */}
-        <div className="hidden md:flex items-center">
+        {/* Action Buttons */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Theme Switcher Button */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className={`p-2 rounded-xl border transition cursor-pointer flex items-center justify-center ${
+              isLight 
+                ? "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-800" 
+                : "bg-slate-900 border-slate-800 hover:bg-slate-850 text-slate-300 hover:text-white"
+            }`}
+          >
+            {isLight ? <Moon className="w-4.5 h-4.5" /> : <Sun className="w-4.5 h-4.5" />}
+          </button>
+
           <button
             onClick={() => {
               const el = document.getElementById("ai-chatbot-system");
@@ -56,7 +78,11 @@ export default function Navbar() {
                 if (button) button.click();
               }
             }}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-indigo-400 hover:text-white transition cursor-pointer"
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl border transition cursor-pointer ${
+              isLight
+                ? "bg-slate-100 border-slate-200 hover:border-slate-350 text-indigo-600 hover:text-indigo-800 hover:bg-slate-200"
+                : "bg-slate-900 border-slate-800 hover:border-slate-700 text-indigo-400 hover:text-white"
+            }`}
           >
             <Terminal className="w-4 h-4 text-indigo-500" />
             <span>Launch AI Terminal</span>
@@ -64,10 +90,25 @@ export default function Navbar() {
         </div>
 
         {/* Mobile menu block */}
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex items-center gap-2">
+          {/* Theme toggle for mobile */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className={`p-2 rounded-lg border transition cursor-pointer flex items-center justify-center ${
+              isLight 
+                ? "bg-slate-100 border-slate-200 text-slate-800" 
+                : "bg-slate-900 border-slate-800 text-slate-300"
+            }`}
+          >
+            {isLight ? <Moon className="w-4.5 h-4.5" /> : <Sun className="w-4.5 h-4.5" />}
+          </button>
+
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-900 rounded-lg transition cursor-pointer"
+            className={`p-2 rounded-lg transition cursor-pointer ${
+              isLight ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900" : "text-slate-400 hover:text-white hover:bg-slate-900"
+            }`}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -81,7 +122,9 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-slate-950 border-b border-slate-900 overflow-hidden"
+            className={`md:hidden border-b overflow-hidden transition-colors duration-300 ${
+              isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-900"
+            }`}
           >
             <div className="px-4 pt-2 pb-6 space-y-3.5">
               {navLinks.map((link) => (
@@ -89,7 +132,9 @@ export default function Navbar() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-slate-400 hover:text-white font-medium text-sm py-2 transition"
+                  className={`block font-medium text-sm py-2 transition ${
+                    isLight ? "text-slate-600 hover:text-slate-900" : "text-slate-400 hover:text-white"
+                  }`}
                 >
                   {link.label}
                 </a>
@@ -104,7 +149,11 @@ export default function Navbar() {
                       if (button) button.click();
                     }
                   }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 text-indigo-400 active:bg-slate-800 cursor-pointer"
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl border cursor-pointer transition ${
+                    isLight 
+                      ? "bg-slate-100 border-slate-200 text-indigo-600 hover:bg-slate-200" 
+                      : "bg-slate-900 border-slate-800 text-indigo-400"
+                  }`}
                 >
                   <Terminal className="w-4 h-4 text-indigo-400" />
                   <span>Launch AI Terminal</span>
@@ -115,5 +164,6 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+
   );
 }

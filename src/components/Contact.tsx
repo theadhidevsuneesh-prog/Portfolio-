@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Send, Terminal, Mail, CheckCircle, Info, ShieldAlert, Linkedin } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from "../ThemeContext";
 
 export default function Contact() {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   const [formData, setFormData] = useState({
     clientName: "",
     clientEmail: "",
@@ -30,7 +34,9 @@ export default function Contact() {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-slate-950 border-t border-slate-900 font-sans relative">
+    <section id="contact" className={`py-20 border-t font-sans relative transition-colors duration-300 ${
+      isLight ? "bg-white border-slate-200" : "bg-slate-950 border-slate-900"
+    }`}>
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -41,14 +47,14 @@ export default function Contact() {
         
         {/* Intro */}
         <div className="mb-14 text-center max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 text-xs font-semibold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full inline-flex mb-3.5">
-            <Mail className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2 text-xs font-semibold text-rose-500 bg-rose-500/10 px-3 py-1.5 rounded-full inline-flex mb-3.5">
+            <Mail className="w-3.5 h-3.5 text-rose-500" />
             SYNCHRONIZATION
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight ${isLight ? "text-slate-950" : "text-white"}`}>
             Initiate Contact & Blueprint Spec
           </h2>
-          <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+          <p className={`text-sm mt-3 leading-relaxed ${isLight ? "text-slate-600" : "text-slate-400"}`}>
             Need an app built, modified, debugged, or structured? Feed me your exact instructions and let's compile something brilliant together.
           </p>
         </div>
@@ -56,7 +62,9 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           
           {/* Form container code */}
-          <div className="lg:col-span-7 bg-slate-900/40 border border-slate-850 p-6 sm:p-8 rounded-2xl text-left flex flex-col justify-between">
+          <div className={`border p-6 sm:p-8 rounded-2xl text-left flex flex-col justify-between transition-colors duration-300 ${
+            isLight ? "bg-slate-50 border-slate-200" : "bg-slate-900/40 border-slate-850"
+          }`}>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -67,7 +75,9 @@ export default function Contact() {
                     value={formData.clientName}
                     onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                     placeholder="e.g. Developer Admin"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className={`w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 transition-colors ${
+                      isLight ? "bg-white border-slate-200 text-slate-850 animate-none" : "bg-slate-950 border-slate-800 text-slate-200"
+                    }`}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -78,7 +88,9 @@ export default function Contact() {
                     value={formData.clientEmail}
                     onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
                     placeholder="e.g. admin@studio.dev"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className={`w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 transition-colors ${
+                      isLight ? "bg-white border-slate-200 text-slate-850" : "bg-slate-950 border-slate-800 text-slate-200"
+                    }`}
                   />
                 </div>
               </div>
@@ -88,10 +100,12 @@ export default function Contact() {
                 <select
                   value={formData.projectType}
                   onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                  className={`w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 transition-colors ${
+                    isLight ? "bg-white border-slate-200 text-slate-850" : "bg-slate-950 border-slate-800 text-slate-200"
+                  }`}
                 >
                   {projectOptions.map((opt) => (
-                    <option key={opt} value={opt} className="bg-slate-950">{opt}</option>
+                    <option key={opt} value={opt} className={isLight ? "bg-white text-slate-850" : "bg-slate-950 text-slate-200"}>{opt}</option>
                   ))}
                 </select>
               </div>
@@ -104,7 +118,9 @@ export default function Contact() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Describe your design specifications, routing requirements, or specific models you'd like coordinated..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                  className={`w-full border rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-indigo-500 transition-colors ${
+                    isLight ? "bg-white border-slate-200 text-slate-850" : "bg-slate-950 border-slate-800 text-slate-200"
+                  }`}
                 />
               </div>
 
@@ -134,43 +150,53 @@ export default function Contact() {
           </div>
 
           {/* Code Viewer Console Panel */}
-          <div className="lg:col-span-5 bg-slate-950 border border-slate-850 p-5 rounded-2xl flex flex-col justify-between font-mono h-[380px] lg:h-auto">
+          <div className={`border p-5 rounded-2xl flex flex-col justify-between font-mono h-[380px] lg:h-auto transition-colors duration-300 ${
+            isLight ? "bg-slate-50 border-slate-200" : "bg-slate-950 border-slate-850"
+          }`}>
             <div>
-              <div className="flex items-center justify-between border-b border-slate-850 pb-3 mb-4">
-                <span className="text-[10px] text-indigo-400 font-bold uppercase flex items-center gap-1.5">
+              <div className={`flex items-center justify-between border-b pb-3 mb-4 transition-colors ${
+                isLight ? "border-slate-200" : "border-slate-850"
+              }`}>
+                <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase flex items-center gap-1.5">
                   <Terminal className="w-3.5 h-3.5" /> Direct Channels & Data
                 </span>
-                <span className="text-[9px] text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest font-black animate-pulse">
+                <span className="text-[9px] text-emerald-600 dark:text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest font-black animate-pulse">
                   Active
                 </span>
               </div>
               
-              <div className="space-y-3 mb-5 text-[12px] text-slate-300 font-sans text-left">
-                <div className="p-3 bg-slate-900/60 border border-slate-850 rounded-xl flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-rose-400 shrink-0" />
+              <div className="space-y-3 mb-5 text-[12px] font-sans text-left">
+                <div className={`p-3 border rounded-xl flex items-center gap-3 transition-colors ${
+                  isLight ? "bg-white border-slate-200" : "bg-slate-900/60 border-slate-850"
+                }`}>
+                  <Mail className="w-4 h-4 text-rose-500 shrink-0" />
                   <div>
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">Email Address</span>
-                    <a href="mailto:theadhidevsuneesh@gmail.com" className="text-slate-200 hover:text-white transition font-medium">
+                    <a href="mailto:theadhidevsuneesh@gmail.com" className={`transition font-medium ${isLight ? "text-slate-850 hover:text-indigo-600" : "text-slate-200 hover:text-white"}`}>
                       theadhidevsuneesh@gmail.com
                     </a>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-900/60 border border-slate-850 rounded-xl flex items-center gap-3">
-                  <Terminal className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className={`p-3 border rounded-xl flex items-center gap-3 transition-colors ${
+                  isLight ? "bg-white border-slate-200" : "bg-slate-900/60 border-slate-850"
+                }`}>
+                  <Terminal className="w-4 h-4 text-emerald-650 dark:text-emerald-450 shrink-0" />
                   <div>
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">Phone Number</span>
-                    <a href="tel:8086012951" className="text-slate-200 hover:text-white transition font-medium">
+                    <a href="tel:8086012951" className={`transition font-medium ${isLight ? "text-slate-850 hover:text-indigo-600" : "text-slate-200 hover:text-white"}`}>
                       +91 8086012951
                     </a>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-900/60 border border-slate-850 rounded-xl flex items-center gap-3">
-                  <Linkedin className="w-4 h-4 text-blue-400 shrink-0" />
+                <div className={`p-3 border rounded-xl flex items-center gap-3 transition-colors ${
+                  isLight ? "bg-white border-slate-200" : "bg-slate-900/60 border-slate-850"
+                }`}>
+                  <Linkedin className="w-4 h-4 text-blue-550 shrink-0" />
                   <div>
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">LinkedIn Profile</span>
-                    <a href="https://www.linkedin.com/in/theadhidevsuneesh" target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white transition font-medium">
+                    <a href="https://www.linkedin.com/in/theadhidevsuneesh" target="_blank" rel="noopener noreferrer" className={`transition font-medium ${isLight ? "text-slate-850 hover:text-indigo-600" : "text-slate-200 hover:text-white"}`}>
                       linkedin.com/in/theadhidevsuneesh
                     </a>
                   </div>
@@ -178,8 +204,10 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="p-3 bg-indigo-950/20 border border-indigo-900/30 rounded-xl flex items-start gap-2.5 text-left text-[11px] text-indigo-300">
-              <Info className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+            <div className={`p-3 border rounded-xl flex items-start gap-2.5 text-left text-[11px] transition-colors ${
+              isLight ? "bg-indigo-50 border-indigo-100 text-indigo-700" : "bg-indigo-950/20 border-indigo-900/30 text-indigo-300"
+            }`}>
+              <Info className="w-4 h-4 text-indigo-550 dark:text-indigo-400 shrink-0 mt-0.5" />
               <span>
                 Select any channel above or submit the handshake form to initiate synchronous communication.
               </span>
