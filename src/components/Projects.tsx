@@ -228,7 +228,7 @@ const projectsList = [
     status: "Completed"
   },
   {
-    title: "AI Photo Booth",
+    title: "Photo Booth",
     url: "https://photo-booth-nine-flax.vercel.app/",
     description: "An interactive photo studio web application featuring filters, creative aspect overlays, and rapid image rendering hooks.",
     icon: Camera,

@@ -57,51 +57,82 @@ async function startServer() {
       });
 
       let response;
+      const systemInstruction = `You are Adhi's AI Assistant, representing yourself as a friendly, helpful portfolio companion. You were developed by Adhidev Suneesh.
+Your guidelines:
+- Be brief, simple, clear, and extremely polite. Avoid complicated developer jargon.
+- Proudly explain that you were developed by Adhidev Suneesh.
+- Share details about Adhidev's projects (such as Solo Leveling Web App, Safar AI, Aura AI, Gusto AI, Leo AI Financing, Zyntax AI, Velvet Letters, Popcorn AI, and Zenith Focus).
+- Discuss Adhidev's skills (React, TypeScript, Next.js, Express, Tailwind CSS, generative AI) and how users can contact him.`;
+
       try {
         response = await ai.models.generateContent({
           model: "gemini-3.5-flash",
           contents: contentsArray,
-          config: {
-            systemInstruction: `You are Adhi's AI Assistant, representing yourself as a friendly, helpful portfolio companion. You were developed by Adhidev Suneesh.
-Your guidelines:
-- Be brief, simple, clear, and extremely polite. Avoid complicated developer jargon.
-- Proudly explain that you were developed by Adhidev Suneesh.
-- Share details about Adhidev's projects (such as Solo Leveling Web App, Safar AI, Aura AI, Gusto AI, Leo AI Financing, Zyntax AI, Velvet Letters, Popcorn AI, and Zenith Focus).
-- Discuss Adhidev's skills (React, TypeScript, Next.js, Express, Tailwind CSS, generative AI) and how users can contact him.`
-          }
+          config: { systemInstruction }
         });
       } catch (err: any) {
-        console.warn("Primary gemini-3.5-flash model failed, falling back to gemini-2.5-flash...", err);
-        response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: contentsArray,
-          config: {
-            systemInstruction: `You are Adhi's AI Assistant, representing yourself as a friendly, helpful portfolio companion. You were developed by Adhidev Suneesh.
-Your guidelines:
-- Be brief, simple, clear, and extremely polite. Avoid complicated developer jargon.
-- Proudly explain that you were developed by Adhidev Suneesh.
-- Share details about Adhidev's projects (such as Solo Leveling Web App, Safar AI, Aura AI, Gusto AI, Leo AI Financing, Zyntax AI, Velvet Letters, Popcorn AI, and Zenith Focus).
-- Discuss Adhidev's skills (React, TypeScript, Next.js, Express, Tailwind CSS, generative AI) and how users can contact him.`
-          }
-        });
+        console.warn("Primary gemini-3.5-flash model failed, falling back to gemini-flash-latest...", err);
+        try {
+          response = await ai.models.generateContent({
+            model: "gemini-flash-latest",
+            contents: contentsArray,
+            config: { systemInstruction }
+          });
+        } catch (fallbackErr: any) {
+          console.warn("Fallback gemini-flash-latest failed, trying gemini-3.1-flash-lite...", fallbackErr);
+          response = await ai.models.generateContent({
+            model: "gemini-3.1-flash-lite",
+            contents: contentsArray,
+            config: { systemInstruction }
+          });
+        }
       }
 
       const text = response.text || "I was unable to formulate a response. Please try again.";
       res.json({ response: text });
     } catch (error: any) {
       console.error("Error in /api/chat:", error);
-      let errMsg = error.message || "An internal error occurred.";
-      if (
-        errMsg.includes("API key") || 
-        errMsg.includes("api_key") || 
-        errMsg.includes("Key") || 
-        errMsg.includes("unauthorized") || 
-        errMsg.includes("400") || 
-        errMsg.includes("403")
+      const errMsg = error.message || String(error);
+      
+      let reason = "API_ERROR";
+      let status = 500;
+
+      // Check if the key is missing or is placeholder
+      const key = process.env.GEMINI_API_KEY;
+      if (!key || key === "MY_GEMINI_API_KEY" || key.trim() === "" || key === "undefined") {
+        reason = "KEY_MISSING";
+        status = 400;
+      } else if (
+        errMsg.toLowerCase().includes("quota") ||
+        errMsg.toLowerCase().includes("429") ||
+        errMsg.toLowerCase().includes("resource_exhausted") ||
+        errMsg.toLowerCase().includes("limit exceeded")
       ) {
-        errMsg = `GEMINI_API_KEY issue: ${errMsg}`;
+        reason = "QUOTA_EXHAUSTED";
+        status = 429;
+      } else if (
+        errMsg.toLowerCase().includes("503") ||
+        errMsg.toLowerCase().includes("unavailable") ||
+        errMsg.toLowerCase().includes("overloaded")
+      ) {
+        reason = "SERVICE_UNAVAILABLE";
+        status = 503;
+      } else if (
+        errMsg.toLowerCase().includes("api key") ||
+        errMsg.toLowerCase().includes("api_key") ||
+        errMsg.toLowerCase().includes("unauthorized") ||
+        errMsg.toLowerCase().includes("invalid key") ||
+        errMsg.toLowerCase().includes("403") ||
+        errMsg.toLowerCase().includes("400")
+      ) {
+        reason = "KEY_INVALID";
+        status = 401;
       }
-      res.status(500).json({ error: errMsg });
+
+      res.status(status).json({ 
+        error: errMsg,
+        reason 
+      });
     }
   });
 

@@ -30,7 +30,7 @@ export default function About() {
           
           {/* Layout Left Column: Big Display Identity Title */}
           <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-500 dark:text-emerald-400 bg-emerald-450/10 px-3 py-1.5 rounded-full inline-flex">
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full inline-flex">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping mr-1" />
               ENGINEER BIO & IDENTITY
             </div>

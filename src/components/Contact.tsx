@@ -62,7 +62,7 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           
           {/* Form container code */}
-          <div className={`border p-6 sm:p-8 rounded-2xl text-left flex flex-col justify-between transition-colors duration-300 ${
+          <div className={`lg:col-span-7 border p-6 sm:p-8 rounded-2xl text-left flex flex-col justify-between transition-colors duration-300 ${
             isLight ? "bg-slate-50 border-slate-200" : "bg-slate-900/40 border-slate-850"
           }`}>
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -150,7 +150,7 @@ export default function Contact() {
           </div>
 
           {/* Code Viewer Console Panel */}
-          <div className={`border p-5 rounded-2xl flex flex-col justify-between font-mono h-[380px] lg:h-auto transition-colors duration-300 ${
+          <div className={`lg:col-span-5 border p-5 rounded-2xl flex flex-col justify-between font-mono h-[380px] lg:h-auto transition-colors duration-300 ${
             isLight ? "bg-slate-50 border-slate-200" : "bg-slate-950 border-slate-850"
           }`}>
             <div>
@@ -181,7 +181,7 @@ export default function Contact() {
                 <div className={`p-3 border rounded-xl flex items-center gap-3 transition-colors ${
                   isLight ? "bg-white border-slate-200" : "bg-slate-900/60 border-slate-850"
                 }`}>
-                  <Terminal className="w-4 h-4 text-emerald-650 dark:text-emerald-450 shrink-0" />
+                  <Terminal className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <div>
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">Phone Number</span>
                     <a href="tel:8086012951" className={`transition font-medium ${isLight ? "text-slate-850 hover:text-indigo-600" : "text-slate-200 hover:text-white"}`}>
@@ -193,7 +193,7 @@ export default function Contact() {
                 <div className={`p-3 border rounded-xl flex items-center gap-3 transition-colors ${
                   isLight ? "bg-white border-slate-200" : "bg-slate-900/60 border-slate-850"
                 }`}>
-                  <Linkedin className="w-4 h-4 text-blue-550 shrink-0" />
+                  <Linkedin className="w-4 h-4 text-blue-500 shrink-0" />
                   <div>
                     <span className="block text-[9px] text-slate-500 uppercase tracking-wider font-mono">LinkedIn Profile</span>
                     <a href="https://www.linkedin.com/in/theadhidevsuneesh" target="_blank" rel="noopener noreferrer" className={`transition font-medium ${isLight ? "text-slate-850 hover:text-indigo-600" : "text-slate-200 hover:text-white"}`}>
@@ -207,7 +207,7 @@ export default function Contact() {
             <div className={`p-3 border rounded-xl flex items-start gap-2.5 text-left text-[11px] transition-colors ${
               isLight ? "bg-indigo-50 border-indigo-100 text-indigo-700" : "bg-indigo-950/20 border-indigo-900/30 text-indigo-300"
             }`}>
-              <Info className="w-4 h-4 text-indigo-550 dark:text-indigo-400 shrink-0 mt-0.5" />
+              <Info className="w-4 h-4 text-indigo-500 dark:text-indigo-400 shrink-0 mt-0.5" />
               <span>
                 Select any channel above or submit the handshake form to initiate synchronous communication.
               </span>

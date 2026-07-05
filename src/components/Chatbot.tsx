@@ -73,17 +73,11 @@ export default function Chatbot() {
       if (!res.ok) {
         const errObj = await res.json().catch(() => ({}));
         const errStr = errObj.error || "";
-        if (
-          errStr.includes("GEMINI_API_KEY") || 
-          errStr.includes("api_key") || 
-          errStr.includes("API key") ||
-          errStr.includes("API_KEY")
-        ) {
-          isApiKeyError = true;
-          setKeyError(true);
-          throw new Error("Missing or invalid GEMINI_API_KEY");
-        }
-        throw new Error(errStr || "Network response was not ok");
+        const reason = errObj.reason || "API_ERROR";
+        
+        const error = new Error(errStr || "Network response was not ok");
+        (error as any).reason = reason;
+        throw error;
       }
 
       const data = await res.json();
@@ -99,13 +93,9 @@ export default function Chatbot() {
     } catch (err: any) {
       console.error("Chatbot API Error:", err);
       
-      const errMsg = err?.message || "";
-      const isKeyErr = 
-        isApiKeyError || 
-        errMsg.includes("GEMINI_API_KEY") || 
-        errMsg.includes("API key") || 
-        errMsg.includes("api_key") ||
-        errMsg.includes("API_KEY");
+      const reason = err?.reason || "API_ERROR";
+      const isKeyErr = (reason === "KEY_MISSING" || reason === "KEY_INVALID");
+      const isQuotaErr = (reason === "QUOTA_EXHAUSTED");
 
       if (isKeyErr) {
         setKeyError(true);
@@ -122,14 +112,20 @@ export default function Chatbot() {
       } else if (lowerText.includes("hello") || lowerText.includes("hi") || lowerText.includes("hey") || lowerText.includes("greet")) {
         localResponse = "Hello! I am Adhi's custom AI Assistant, developed by Adhidev Suneesh. How can I help you today?";
       } else if (lowerText.includes("project") || lowerText.includes("work") || lowerText.includes("portfolio")) {
-        localResponse = "Adhidev has created several outstanding AI and web projects, including:\n1. **Solo Leveling Web App**: Immersive fansite UI.\n2. **Safar AI**: Personalized trip curators.\n3. **Aura AI**: Gamified productivity workflows.\n4. **Gusto AI**: Pantry mapping culinary assistants.\n5. **Leo AI Financing**: Financial forecasts dashboards.\n6. **Zyntax AI**: Automated developer workspaces.\n7. **Velvet Letters**: Typographic canvas and digital journaling.\n8. **Popcorn AI**: Movie recommendations & mood curation.\n9. **Zenith Focus**: Pomodoro task companion and dashboard.";
+        localResponse = "Adhidev has created several outstanding AI and web projects, including:\n1. **Photo Booth**: An interactive photo studio web application featuring filters, creative aspect overlays, and rapid image rendering hooks.\n2. **Solo Leveling Web App**: Immersive fansite UI.\n3. **Safar AI**: Personalized trip curators.\n4. **Aura AI**: Gamified productivity workflows.\n5. **Gusto AI**: Pantry mapping culinary assistants.\n6. **Leo AI Financing**: Financial forecasts dashboards.\n7. **Zyntax AI**: Automated developer workspaces.\n8. **Velvet Letters**: Typographic canvas and digital journaling.\n9. **Popcorn AI**: Movie recommendations & mood curation.\n10. **Zenith Focus**: Pomodoro task companion and dashboard.";
       } else if (lowerText.includes("contact") || lowerText.includes("linkedin") || lowerText.includes("email")) {
         localResponse = "You can connect with Adhidev Suneesh directly via:\n- **LinkedIn**: linkedin.com/in/theadhidevsuneesh\n- **Email**: theadhidevsuneesh@gmail.com\n- **Contact Form**: Scroll to the bottom of the page to send a direct message!";
       }
 
       let botContent = "";
       if (localResponse) {
-        botContent = `🤖 **[Local Mode]** ${localResponse}\n\n*(Note: This AI was developed by Adhidev Suneesh. Register your \`GEMINI_API_KEY\` under Settings > Secrets to unlock full conversational capability!)*`;
+        if (isKeyErr) {
+          botContent = `🤖 **[Local Mode]** ${localResponse}\n\n*(Note: This AI was developed by Adhidev Suneesh. Register your \`GEMINI_API_KEY\` under Settings > Secrets to unlock full conversational capability!)*`;
+        } else if (isQuotaErr) {
+          botContent = `🤖 **[Local Mode]** ${localResponse}\n\n*(Note: This AI was developed by Adhidev Suneesh. The shared free-tier daily API quota has been reached!)*`;
+        } else {
+          botContent = `🤖 **[Local Mode]** ${localResponse}\n\n*(Note: This AI was developed by Adhidev Suneesh. The cloud brain is temporarily experiencing high demand or a network timeout, so I responded using local intelligence!)*`;
+        }
       } else {
         if (isKeyErr) {
           botContent = `I am currently operating in **Local Mode** because your \`GEMINI_API_KEY\` is not registered or is invalid in the Secrets panel. This AI was developed by Adhidev Suneesh.
@@ -142,14 +138,21 @@ export default function Chatbot() {
 5. Save and enjoy full interactive chat!
  
 *In the meantime, feel free to ask about Adhi's **tech stack**, his **projects**, or how to **contact him**! ⚡*`;
+        } else if (isQuotaErr) {
+          botContent = `I am currently operating in **Local Mode** because the daily free tier request limit for the Gemini API has been reached. This AI was developed by Adhidev Suneesh.
+ 
+**How to restore service:**
+- Please try again later or register your own billable \`GEMINI_API_KEY\` under Settings > Secrets in AI Studio.
+ 
+*No worries! In the meantime, you can ask me about Adhi's **projects**, his **tech stack**, or how to **contact him**! ⚡*`;
         } else {
-          botContent = `I encountered a connection issue reaching my cloud brain. This AI assistant was developed by Adhidev Suneesh.
+          botContent = `I encountered a temporary connection issue reaching my cloud brain, although your \`GEMINI_API_KEY\` appears to be registered. This AI assistant was developed by Adhidev Suneesh.
  
 **Quick tips to restore full AI:**
-1. **API Key Check**: Verify your \`GEMINI_API_KEY\` is correct under Settings > Secrets.
-2. **Server Check**: Click "Restart Dev Server" to refresh the container.
+1. **Wait and Retry**: The model may be experiencing high demand (e.g. 503 Service Unavailable). Please try sending your message again in a few seconds.
+2. **Key Validation**: Ensure your key is valid and has active quota.
  
-*No worries! You can still ask me about Adhi's **projects**, his **tech stack**, or how to **contact him**! ⚡*`;
+*No worries! In the meantime, you can ask me about Adhi's **projects**, his **tech stack**, or how to **contact him** directly! ⚡*`;
         }
       }
 
