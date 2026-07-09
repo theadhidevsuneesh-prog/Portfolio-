@@ -38,10 +38,10 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-[11vw] sm:text-8xl lg:text-[105px] font-display font-black tracking-tighter leading-[0.85] select-none w-full"
           >
-            <span className={`block uppercase cursor-default text-transparent transition-all duration-500 ${
+            <span className={`block uppercase cursor-default transition-all duration-500 text-stroke-clean ${
               isLight 
-                ? "[-webkit-text-stroke:1px_rgba(15,23,42,0.8)] sm:[-webkit-text-stroke:2px_rgba(15,23,42,0.8)] hover:text-slate-950" 
-                : "[-webkit-text-stroke:1px_rgba(255,255,255,0.9)] sm:[-webkit-text-stroke:2px_rgba(255,255,255,0.9)] hover:text-white"
+                ? "text-slate-50 [-webkit-text-stroke:2px_rgba(15,23,42,0.8)] sm:[-webkit-text-stroke:4px_rgba(15,23,42,0.8)] hover:text-slate-950" 
+                : "text-slate-950 [-webkit-text-stroke:2px_rgba(255,255,255,0.9)] sm:[-webkit-text-stroke:4px_rgba(255,255,255,0.9)] hover:text-white"
             }`}>
               ADHIDEV
             </span>

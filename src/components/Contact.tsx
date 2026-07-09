@@ -15,15 +15,53 @@ export default function Contact() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successInfo, setSuccessInfo] = useState<{ simulated?: boolean; message?: string; instructions?: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    setErrorMsg("");
+    setSuccessInfo(null);
+    setSuccess(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errObj = await response.json().catch(() => ({}));
+        throw new Error(errObj.error || "Failed to dispatch contact request.");
+      }
+
+      const data = await response.json();
+      setSuccessInfo(data);
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 5000);
-    }, 1200);
+      
+      // Clear form on success
+      setFormData({
+        clientName: "",
+        clientEmail: "",
+        projectType: "Full-Stack Web App",
+        description: ""
+      });
+
+      // Clear success indicator after 10 seconds
+      setTimeout(() => {
+        setSuccess(false);
+        setSuccessInfo(null);
+      }, 10000);
+    } catch (err: any) {
+      console.error("Form submit error:", err);
+      setErrorMsg(err.message || "An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const projectOptions = [
@@ -135,15 +173,42 @@ export default function Contact() {
             </form>
 
             <AnimatePresence>
-              {success && (
+              {success && successInfo && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-xl text-emerald-400 text-xs flex items-center gap-2"
+                  className={`mt-4 p-4 border rounded-xl text-xs space-y-2 text-left ${
+                    successInfo.simulated
+                      ? "bg-amber-500/10 border-amber-500/25 text-amber-600 dark:text-amber-400"
+                      : "bg-emerald-500/10 border-emerald-500/25 text-emerald-600 dark:text-emerald-400"
+                  }`}
                 >
-                  <CheckCircle className="w-4 h-4 shrink-0" />
-                  <span>Prompt package dispatched. Handshake connection simulated successfully!</span>
+                  <div className="flex items-start gap-2 font-semibold">
+                    {successInfo.simulated ? (
+                      <Info className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4 shrink-0 text-emerald-500 mt-0.5" />
+                    )}
+                    <span>{successInfo.message}</span>
+                  </div>
+                  {successInfo.instructions && (
+                    <p className="text-[11px] opacity-95 leading-relaxed font-sans pl-6 border-l border-amber-500/30">
+                      {successInfo.instructions}
+                    </p>
+                  )}
+                </motion.div>
+              )}
+
+              {errorMsg && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-4 p-3 bg-rose-500/10 border border-rose-500/25 rounded-xl text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2"
+                >
+                  <ShieldAlert className="w-4 h-4 shrink-0 text-rose-500" />
+                  <span><strong>Error:</strong> {errorMsg}</span>
                 </motion.div>
               )}
             </AnimatePresence>

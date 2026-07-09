@@ -3,6 +3,7 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -133,6 +134,136 @@ Your guidelines:
         error: errMsg,
         reason 
       });
+    }
+  });
+
+  // API Route - Coordinated Contact Dispatcher
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { clientName, clientEmail, projectType, description } = req.body;
+
+      if (!clientName || !clientEmail || !description) {
+        res.status(400).json({ error: "Client Name, Coordinated Email, and technical prompt description are required." });
+        return;
+      }
+
+      const receiverEmail = process.env.RECEIVER_EMAIL || "theadhidevsuneesh@gmail.com";
+      const resendKey = process.env.RESEND_API_KEY;
+
+      // Option A: Try Resend API if API Key is configured
+      if (resendKey && resendKey !== "MY_RESEND_API_KEY" && resendKey.trim() !== "") {
+        try {
+          const resendResponse = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${resendKey}`
+            },
+            body: JSON.stringify({
+              from: "Portfolio Contact <onboarding@resend.dev>",
+              to: receiverEmail,
+              reply_to: clientEmail,
+              subject: `[Portfolio Dispatch] ${projectType} from ${clientName}`,
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; color: #1e293b;">
+                  <h2 style="color: #4f46e5; margin-top: 0; font-size: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">New Portfolio Dispatch Request</h2>
+                  <p style="margin: 10px 0;"><strong>Client Name / ID:</strong> ${clientName}</p>
+                  <p style="margin: 10px 0;"><strong>Coordinated Email:</strong> <a href="mailto:${clientEmail}" style="color: #4f46e5; text-decoration: none;">${clientEmail}</a></p>
+                  <p style="margin: 10px 0;"><strong>Target Architecture:</strong> <span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">${projectType}</span></p>
+                  <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #f1f5f9; margin-top: 15px;">
+                    <p style="margin-top: 0; font-weight: bold; color: #64748b; font-size: 11px; text-transform: uppercase; font-family: monospace; letter-spacing: 0.05em;">Technical Prompt Blueprint</p>
+                    <p style="margin-bottom: 0; white-space: pre-wrap; font-size: 13px; color: #334155; line-height: 1.5;">${description}</p>
+                  </div>
+                  <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
+                  <p style="font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 0;">Sent via your Portfolio's Resend integration.</p>
+                </div>
+              `
+            })
+          });
+
+          if (resendResponse.ok) {
+            res.json({ 
+              success: true, 
+              simulated: false, 
+              provider: "resend",
+              message: "Handshake payload successfully dispatched to Resend." 
+            });
+            return;
+          } else {
+            const errText = await resendResponse.text();
+            console.warn("Resend API failed, continuing with SMTP check...", errText);
+          }
+        } catch (resendErr) {
+          console.warn("Error calling Resend API, checking SMTP configuration...", resendErr);
+        }
+      }
+
+      // Option B: Try SMTP Server (Nodemailer)
+      const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+      const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
+      const smtpUser = process.env.SMTP_USER;
+      const smtpPass = process.env.SMTP_PASS;
+
+      if (smtpUser && smtpPass && smtpUser.trim() !== "" && smtpPass.trim() !== "") {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
+          },
+        });
+
+        await transporter.sendMail({
+          from: `"${clientName}" <${smtpUser}>`,
+          replyTo: clientEmail,
+          to: receiverEmail,
+          subject: `[Portfolio SMTP Dispatch] ${projectType} from ${clientName}`,
+          text: `New request from your portfolio website:
+          
+Name: ${clientName}
+Email: ${clientEmail}
+Project Type: ${projectType}
+
+Description/Blueprint:
+${description}
+          `,
+          html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; color: #1e293b;">
+              <h2 style="color: #4f46e5; margin-top: 0; font-size: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">New Portfolio SMTP Request</h2>
+              <p style="margin: 10px 0;"><strong>Client Name / ID:</strong> ${clientName}</p>
+              <p style="margin: 10px 0;"><strong>Coordinated Email:</strong> <a href="mailto:${clientEmail}" style="color: #4f46e5; text-decoration: none;">${clientEmail}</a></p>
+              <p style="margin: 10px 0;"><strong>Target Architecture:</strong> <span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">${projectType}</span></p>
+              <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #f1f5f9; margin-top: 15px;">
+                <p style="margin-top: 0; font-weight: bold; color: #64748b; font-size: 11px; text-transform: uppercase; font-family: monospace; letter-spacing: 0.05em;">Technical Prompt Blueprint</p>
+                <p style="margin-bottom: 0; white-space: pre-wrap; font-size: 13px; color: #334155; line-height: 1.5;">${description}</p>
+              </div>
+              <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
+              <p style="font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 0;">Sent via your Portfolio's Nodemailer SMTP integration.</p>
+            </div>
+          `
+        });
+
+        res.json({ 
+          success: true, 
+          simulated: false, 
+          provider: "smtp",
+          message: "Handshake payload successfully dispatched via SMTP." 
+        });
+        return;
+      }
+
+      // Option C: Return Simulated Success with guidance because credentials are not configured yet
+      res.json({
+        success: true,
+        simulated: true,
+        message: "Handshake processed! Real email receipt requires SMTP or Resend API registration.",
+        instructions: "To receive actual emails to your inbox, register your SMTP credentials (SMTP_USER & SMTP_PASS) or RESEND_API_KEY under Settings > Secrets in AI Studio!"
+      });
+    } catch (err: any) {
+      console.error("Error dispatching contact request:", err);
+      res.status(500).json({ error: err.message || "Failed to dispatch coordinated request." });
     }
   });
 
